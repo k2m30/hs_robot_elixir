@@ -10,11 +10,11 @@ defmodule Tank.Action do
         IO.inspect commands
         case commands["command"] do
             nil -> IO.puts "nil detected"
-            "87" -> Tank.forward  # "forward"
-            "83" -> Tank.backward # "backward"
-            "65" -> Tank.left     # "left"
-            "68" -> Tank.right    # "right"
-            "32" -> Tank.stop     # "stop"
+            "87" -> Tank.Storage.command(:w)  # "forward"
+            "83" -> Tank.Storage.command(:s) # "backward"
+            "65" -> Tank.Storage.command(:a)     # "left"
+            "68" -> Tank.Storage.command(:d)    # "right"
+            "32" -> Tank.Storage.command(:space)     # "stop"
             command -> IO.puts command
         end
         headers = [{"content-type", "text/html"}]

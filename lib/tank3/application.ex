@@ -9,16 +9,15 @@ defmodule Tank.Application do
     def start(_type, _args) do      
 
       children = [
-        worker(__MODULE__, [], function: :run)
+        worker(__MODULE__, [], function: :run),
+        worker(Tank.Storage, [])
       ]
   
       opts = [strategy: :one_for_one, name: Tank.Supervisor]
       Supervisor.start_link(children, opts)
     end
   
-    def run do
-      gpio_init()
-      
+    def run do            
       routes = [
         {"/", Tank.Root, []},
         # {"/static/[...]", :cowboy_static, {:priv_dir, :tank, "js"}},
@@ -32,9 +31,5 @@ defmodule Tank.Application do
       env = [dispatch: dispatch]
   
       {:ok, _pid} = :cowboy.start_http(:http, 100, opts, [env: env])
-    end
-
-    def gpio_init do
-      
     end
 end
