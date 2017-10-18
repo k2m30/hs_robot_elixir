@@ -139,8 +139,12 @@ defmodule Tank.Storage do
   end
 
   def stand_by(pids) do
-    GPIO.write(pids.stand_by, !pids.is_on)
+    case pids.is_on do
+       true -> GPIO.write(pids.stand_by, false)
+       _ -> GPIO.write(pids.stand_by, true)
+    end    
     Map.put(pids, :state, :stand_by)
+    |> Map.put(:is_on, !pids.is_on)
   end
   
 end
