@@ -2,13 +2,13 @@ defmodule Tank.Storage do
   # use ElixirALE.GPIO
   # alias Tank.GPIO
   alias ElixirALE.GPIO
-  @stand_by 1
-  @pwm_a 0
-  @pwm_b 6
-  @ain_1 3
-  @ain_2 2
-  @bin_1 4
-  @bin_2 5
+  @stand_by 18 #1
+  @pwm_a 17 #0
+  @pwm_b 25 #6
+  @ain_1 22 #3
+  @ain_2 27 #2
+  @bin_1 23 #4
+  @bin_2 24 #5
 
   use GenServer
   # API
@@ -62,9 +62,10 @@ defmodule Tank.Storage do
         :space -> new_pids = stop(pids)
         _ -> IO.puts command
       end      
+      IO.inspect readall(new_pids)
       {:noreply, new_pids}
     else
-      IO.puts "Same state"
+      # IO.puts "Same state"
       {:noreply, pids}
     end
     
@@ -73,6 +74,16 @@ defmodule Tank.Storage do
   def handle_call(:get_pids, _from, pids) do
     {:reply, pids, pids}
   end
+
+  def handle_call(:readall, _from, pids) do    
+    {:reply, readall(pids), pids}
+  end
+
+  #/////////////////////////
+  def readall(pids) do
+    %{stand_by: GPIO.read(pids.stand_by), ain_1: GPIO.read(pids.ain_1), ain_2: GPIO.read(pids.ain_2), bin_1: GPIO.read(pids.bin_1), bin_2: GPIO.read(pids.bin_2), pwm_a: GPIO.read(pids.pwm_a), pwm_b: GPIO.read(pids.pwm_b) }
+  end
+  #/////////////////////////
 
   def forward(pids) do
     left_forward(pids)
@@ -103,6 +114,8 @@ defmodule Tank.Storage do
     right_stop(pids)
     Map.put(pids, :state, :space)
   end
+
+#/////////////////////////////
 
   def left_forward(pids) do
     GPIO.write(pids.ain_1, 1)
