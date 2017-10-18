@@ -39,23 +39,33 @@ defmodule Tank.Storage do
 
     GPIO.write(stand_by, 1)
   
-    {:ok, %{stand_by: stand_by, ain_1: ain_1, ain_2: ain_2, bin_1: bin_1, bin_2: bin_2, pwm_a: pwm_a, pwm_b: pwm_b} }
+    {:ok, %{stand_by: stand_by, ain_1: ain_1, ain_2: ain_2, bin_1: bin_1, bin_2: bin_2, pwm_a: pwm_a, pwm_b: pwm_b, state: :stop, is_on: true} }
   
   end
+  
   def handle_cast({:set_pids, pids}, _state) do
     {:noreply, pids}
   end
 
   def handle_cast({:command, command}, pids) do
-    case command do
-      :w -> forward(pids)
-      :s -> backward(pids)
-      :a -> left(pids)
-      :d -> right(pids)
-      :space -> stop(pids)
-      _ -> IO.puts command
+    if command != pids.state do
+      IO.puts command
+      IO.puts pids.state
+      case command do
+        :w -> new_pids = forward(pids)
+        :s -> new_pids = backward(pids)
+        :a -> new_pids = left(pids)
+        :d -> new_pids = right(pids)
+        :p -> new_pids = stand_by(pids)
+        :space -> new_pids = stop(pids)
+        _ -> IO.puts command
+      end      
+      {:noreply, new_pids}
+    else
+      IO.puts "Same state"
+      {:noreply, pids}
     end
-    {:noreply, pids}
+    
   end
 
   def handle_call(:get_pids, _from, pids) do
@@ -65,26 +75,31 @@ defmodule Tank.Storage do
   def forward(pids) do
     left_forward(pids)
     right_forward(pids)
+    Map.put(pids, :state, :w)
   end
 
   def backward(pids) do
     left_backward(pids)
     right_backward(pids)
+    Map.put(pids, :state, :s)
   end
 
   def left(pids) do
     left_forward(pids)
     right_stop(pids)
+    Map.put(pids, :state, :a)
   end
 
   def right(pids) do
     left_stop(pids)
     right_forward(pids)
+    Map.put(pids, :state, :d)
   end
 
   def stop(pids) do
     left_stop(pids)
     right_stop(pids)
+    Map.put(pids, :state, :space)
   end
 
   def left_forward(pids) do
@@ -121,6 +136,11 @@ defmodule Tank.Storage do
     GPIO.write(pids.bin_1, 0)
     GPIO.write(pids.bin_2, 0)
     GPIO.write(pids.pwm_b, 1)
+  end
+
+  def stand_by(pids) do
+    GPIO.write(pids.stand_by, !pids.is_on)
+    Map.put(pids, :state, :stand_by)
   end
   
 end

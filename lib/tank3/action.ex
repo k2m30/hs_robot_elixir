@@ -15,6 +15,7 @@ defmodule Tank.Action do
             "65" -> Tank.Storage.command(:a)     # "left"
             "68" -> Tank.Storage.command(:d)    # "right"
             "32" -> Tank.Storage.command(:space)     # "stop"
+            "80" -> Tank.Storage.command(:p)     # "stand_by"
             command -> IO.puts command
         end
         headers = [{"content-type", "text/html"}]

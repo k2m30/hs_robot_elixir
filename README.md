@@ -4,18 +4,8 @@
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `Tank` to your list of dependencies in `mix.exs`:
+sudo wpa_passphrase [ssid] [pass]
 
-```elixir
-def deps do
-  [
-    {:Tank, "~> 0.1.0"}
-  ]
-end
-```
+add this to 
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/Tank](https://hexdocs.pm/Tank).
-
+sudo mcedit /etc/wpa_supplicant/wpa_supplicant.conf
