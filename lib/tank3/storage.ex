@@ -1,5 +1,7 @@
 defmodule Tank.Storage do
-  alias Tank.GPIO
+  # use ElixirALE.GPIO
+  # alias Tank.GPIO
+  alias ElixirALE.GPIO
   @stand_by 1
   @pwm_a 0
   @pwm_b 6
