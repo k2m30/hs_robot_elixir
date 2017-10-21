@@ -1,7 +1,7 @@
 defmodule Tank.Root do
     def init({:tcp, :http}, req, opts) do
-      IO.inspect req
-      IO.inspect opts      
+      # IO.inspect req
+      # IO.inspect opts      
       
       headers = [{"content-type", "text/html"}]
       {:ok, body} = File.read("public/main.html")            

@@ -2,9 +2,9 @@ defmodule Tank.Storage do
   # use ElixirALE.GPIO
   # alias Tank.GPIO
   alias ElixirALE.GPIO
-  @stand_by 18 #1
-  @pwm_a 17 #0
-  @pwm_b 25 #6
+  @stand_by 25 #6
+  @pwm_a 19 #24
+  @pwm_b 18 #1
   @ain_1 22 #3
   @ain_2 27 #2
   @bin_1 23 #4
@@ -98,14 +98,14 @@ defmodule Tank.Storage do
   end
 
   def left(pids) do
-    left_forward(pids)
-    right_stop(pids)
+    left_stop(pids)
+    right_forward(pids)
     Map.put(pids, :state, :a)
   end
 
   def right(pids) do
-    left_stop(pids)
-    right_forward(pids)
+    left_forward(pids)
+    right_stop(pids)
     Map.put(pids, :state, :d)
   end
 
@@ -118,26 +118,26 @@ defmodule Tank.Storage do
 #/////////////////////////////
 
   def left_forward(pids) do
-    GPIO.write(pids.ain_1, 1)
-    GPIO.write(pids.ain_2, 0)
-    GPIO.write(pids.pwm_a, 1)
-  end
-
-  def right_forward(pids) do
-    GPIO.write(pids.bin_1, 1)
-    GPIO.write(pids.bin_2, 0)
-    GPIO.write(pids.pwm_b, 1)
-  end
-
-  def left_backward(pids) do
     GPIO.write(pids.ain_1, 0)
     GPIO.write(pids.ain_2, 1)
     GPIO.write(pids.pwm_a, 1)
   end
 
-  def right_backward(pids) do
+  def right_forward(pids) do
     GPIO.write(pids.bin_1, 0)
     GPIO.write(pids.bin_2, 1)
+    GPIO.write(pids.pwm_b, 1)
+  end
+
+  def left_backward(pids) do
+    GPIO.write(pids.ain_1, 1)
+    GPIO.write(pids.ain_2, 0)
+    GPIO.write(pids.pwm_a, 1)
+  end
+
+  def right_backward(pids) do
+    GPIO.write(pids.bin_1, 1)
+    GPIO.write(pids.bin_2, 0)
     GPIO.write(pids.pwm_b, 1)
   end
 
